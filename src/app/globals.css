@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050506;
+  --foreground: #d4d4d8;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Geist Mono', monospace;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ec4899;
+}
+
+/* Animate in */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeInUp 0.3s ease both;
+}
+
+/* Glow pulse for download modal */
+@keyframes glowPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(236, 72, 153, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+  }
+}
+
+.glow-pink {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Skeleton loading shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #18181b 25%, #27272a 50%, #18181b 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
