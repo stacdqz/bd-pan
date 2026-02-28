@@ -4,6 +4,49 @@ import { useState, useEffect, useRef } from 'react';
 const ALIST_BASE_DEFAULT = (process.env.NEXT_PUBLIC_ALIST_URL || 'http://47.108.222.119:5244').replace(/\/+$/, '');
 const SIZE_THRESHOLD = 20 * 1024 * 1024; // 20MB
 
+const CHANGELOG_DATA = [
+  { commit: '2987c0c', date: '2026-02-28', message: 'feat: complete v1.0 to v1.2 changelog history and badge' },
+  { commit: 'f4af374', date: '2026-02-28', message: 'feat: add version badge and changelog popup' },
+  { commit: 'b88cd25', date: '2026-02-28', message: 'Fix CF download popup block on mobile' },
+  { commit: '0db06b6', date: '2026-02-27', message: 'Fix AList direct download URL missing sign parameter' },
+  { commit: '5a9ff26', date: '2026-02-27', message: 'Revert download logic to classic proxy mode and remove Web-NDM' },
+  { commit: 'b425416', date: '2026-02-26', message: 'feat: small Baidu files default map to proxy server to prevent 403; add cancel download button for Web NDM' },
+  { commit: '276f54c', date: '2026-02-26', message: 'fix: Web NDM handle Cloudflare missing Range header or caching resulting in 200 OK fallback limits' },
+  { commit: 'a161677', date: '2026-02-26', message: 'feat: Add burst reconnect strategy to defeat Cloudflare and Baidu chunk throttling timeouts' },
+  { commit: 'd5a9091', date: '2026-02-26', message: 'fix: Revert Web NDM streaming to pure memory blob for max speed, fix thread input component value update bug' },
+  { commit: 'bbbbc7a', date: '2026-02-26', message: 'feat: Add user selectable thread count for multithread download' },
+  { commit: '1e475b0', date: '2026-02-26', message: 'fix: Web NDM slow chunks issue, stream response to disk, reduce to 3 threads, fix mobile layout' },
+  { commit: 'ceee006', date: '2026-02-26', message: 'feat: enhance multithread download and direct download fixes for mobile' },
+  { commit: '405d446', date: '2026-02-26', message: 'feat: Add AList custom server settings for admin' },
+  { commit: '54b683a', date: '2026-02-26', message: 'feat: Add single thread CF download fallback to modal' },
+  { commit: 'ce97770', date: '2026-02-26', message: 'feat: Add multithreading Web NDM downloader for Baidu Pan CF to main dashboard' },
+  { commit: '4ea312d', date: '2026-02-26', message: 'feat: implement multithreaded Web NDM downloader for Baidu Pan CF' },
+  { commit: 'bf928dd', date: '2026-02-26', message: 'fix: mobile CF download - pre-open window to avoid popup blocker' },
+  { commit: '573f68a', date: '2026-02-26', message: 'fix: Aliyun downloads use AList /p/ proxy mode, errors return text not JSON' },
+  { commit: 'd7f5968', date: '2026-02-26', message: 'fix: match /aliyun_new path for Aliyun Cloud Drive proxy downloads' },
+  { commit: '8899a17', date: '2026-02-26', message: 'fix: Aliyun Cloud Drive uses proxy download (signed URL needs server headers)' },
+  { commit: 'df597f5', date: '2026-02-26', message: 'fix: all storages use direct download, only Baidu large files show method picker' },
+  { commit: 'b022dba', date: '2026-02-26', message: 'fix: use cf.ryantan.fun instead of workers.dev for CF proxy' },
+  { commit: '68766af', date: '2026-02-26', message: 'feat: add Cloudflare Workers edge proxy download option' },
+  { commit: '54ab4ba', date: '2026-02-26', message: 'feat: add auto-UA download option for large Baidu Pan files' },
+  { commit: '1898d0a', date: '2026-02-26', message: 'feat: 32-thread parallel download engine for Baidu Pan with progress bar' },
+  { commit: '9505da3', date: '2026-02-25', message: 'feat: smart download - small files direct, large files show method picker' },
+  { commit: '0214efa', date: '2026-02-25', message: 'feat: add IP_Stats panel, Cloud_Drive checkboxes + batch download' },
+  { commit: '7c8068e', date: '2026-02-25', message: 'fix: remove stale download modal JSX, clear all TS errors' },
+  { commit: 'a3a5e98', date: '2026-02-25', message: 'feat: server-side User-Agent proxy download for Baidu Pan (no plugin needed)' },
+  { commit: 'b6cfcd1', date: '2026-02-25', message: 'feat: add download options modal for Cloud_Drive (direct link + proxy)' },
+  { commit: 'ba9c6a6', date: '2026-02-25', message: 'fix: use AList /p/ proxy mode for Baidu Pan large file downloads' },
+  { commit: '62e3f5e', date: '2026-02-25', message: 'fix: Use AList proxy /d/ URL for downloads to bypass Baidu Pan auth' },
+  { commit: '584207f', date: '2026-02-25', message: 'feat: Add AList Cloud_Drive panel to home page' },
+  { commit: '86655b8', date: '2026-02-25', message: 'fix: allow sql run in production' },
+  { commit: '9c26c0b', date: '2026-02-25', message: 'fix: allow github upload in production' },
+  { commit: '25ea2a6', date: '2026-02-25', message: 'feat: optimize github upload to support binary files' },
+  { commit: '5559d8f', date: '2026-02-25', message: 'feat: Mobile responsive adaptation' },
+  { commit: '5d69123', date: '2026-02-25', message: 'Add postcss.config.mjs and eslint.config.mjs to fix Tailwind CSS styling' },
+  { commit: '378d1be', date: '2026-02-25', message: 'Add missing files: _auth.ts, globals.css, favicon, login, sql-run, github-files, github-upload, next.config.ts' },
+  { commit: '46d1068', date: '2026-02-25', message: 'Initial commit – dashboard code' },
+];
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [adminToken, setAdminToken] = useState<string | null>(null);
@@ -552,7 +595,9 @@ export default function Home() {
                   <button onClick={() => setShowChangelog(false)} className="text-zinc-500 hover:text-zinc-300">✕</button>
                 </div>
 
-                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar pb-6">
+
+                  <div className="text-[12px] font-bold text-zinc-400 mb-2 border-b border-zinc-800 pb-2">🎉 主要版本里程碑</div>
                   <div className="relative pl-4 border-l-2 border-pink-500/30">
                     <div className="absolute w-2 h-2 bg-pink-500 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
                     <div className="flex items-baseline gap-2 mb-1">
@@ -561,7 +606,7 @@ export default function Home() {
                     </div>
                     <ul className="text-[11px] text-zinc-400 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-700">
                       <li>修复移动端浏览器拦截 CF 代理加速新窗口弹窗的问题，改为直接跳转下载。</li>
-                      <li>添加了各端同步的版本号标识和详细的更新日志展示面板。</li>
+                      <li>添加了各端同步的版本号标识和详细的更新日志展示面板（追溯了第一行代码起的所有 Commit）。</li>
                     </ul>
                   </div>
 
@@ -593,7 +638,7 @@ export default function Home() {
                     </ul>
                   </div>
 
-                  <div className="relative pl-4 border-l-2 border-zinc-800">
+                  <div className="relative pl-4 border-l-2 border-zinc-800 pb-4">
                     <div className="absolute w-2 h-2 bg-zinc-700 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
                     <div className="flex items-baseline gap-2 mb-1">
                       <span className="text-xs font-bold text-zinc-300">v1.0.0</span>
@@ -603,6 +648,21 @@ export default function Home() {
                       <li>初始提交开源项目主线框架：在 Dashboard 控制台核心区域嵌入百度网盘· AList 的深度集成文件流体系。</li>
                       <li>原生拥有一站式的系统资源独立文件分类视图、新建、极速重命名、实时全选与批处理下载机制。</li>
                     </ul>
+                  </div>
+
+                  <div className="text-[12px] font-bold text-zinc-500 mt-6 mb-2 border-b border-zinc-800 pb-2">🗃️ 完整 Git Commit 记录 (共 {CHANGELOG_DATA.length} 条)</div>
+                  <div className="space-y-3">
+                    {CHANGELOG_DATA.map((log, index) => (
+                      <div key={log.commit} className="relative pl-3 border-l-2 border-zinc-800/60">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-[10px] bg-zinc-800/80 px-1 py-0.5 rounded font-mono text-zinc-400">{log.commit}</span>
+                          <span className="text-[9px] text-zinc-600 font-mono">{log.date}</span>
+                        </div>
+                        <div className="text-[10px] text-zinc-500 leading-tight">
+                          {log.message}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
