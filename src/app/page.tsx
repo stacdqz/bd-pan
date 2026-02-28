@@ -4,47 +4,48 @@ import { useState, useEffect, useRef } from 'react';
 const ALIST_BASE_DEFAULT = (process.env.NEXT_PUBLIC_ALIST_URL || 'http://47.108.222.119:5244').replace(/\/+$/, '');
 const SIZE_THRESHOLD = 20 * 1024 * 1024; // 20MB
 
-const CHANGELOG_DATA: { commit: string; date: string; message: string; version?: string; milestoneDesc?: string }[] = [
-  { commit: '2987c0c', date: '2026-02-28', message: 'feat: complete v1.0 to v1.2 changelog history and badge' },
-  { commit: 'f4af374', date: '2026-02-28', message: 'feat: add version badge and changelog popup' },
-  { commit: 'b88cd25', date: '2026-02-28', message: 'Fix CF download popup block on mobile' },
-  { commit: '0db06b6', date: '2026-02-27', message: 'Fix AList direct download URL missing sign parameter' },
-  { commit: '5a9ff26', date: '2026-02-27', message: 'Revert download logic to classic proxy mode and remove Web-NDM' },
-  { commit: 'b425416', date: '2026-02-26', message: 'feat: small Baidu files default map to proxy server to prevent 403; add cancel download button for Web NDM' },
-  { commit: '276f54c', date: '2026-02-26', message: 'fix: Web NDM handle Cloudflare missing Range header or caching resulting in 200 OK fallback limits' },
-  { commit: 'a161677', date: '2026-02-26', message: 'feat: Add burst reconnect strategy to defeat Cloudflare and Baidu chunk throttling timeouts' },
-  { commit: 'd5a9091', date: '2026-02-26', message: 'fix: Revert Web NDM streaming to pure memory blob for max speed, fix thread input component value update bug' },
-  { commit: 'bbbbc7a', date: '2026-02-26', message: 'feat: Add user selectable thread count for multithread download' },
-  { commit: '1e475b0', date: '2026-02-26', message: 'fix: Web NDM slow chunks issue, stream response to disk, reduce to 3 threads, fix mobile layout' },
-  { commit: 'ceee006', date: '2026-02-26', message: 'feat: enhance multithread download and direct download fixes for mobile' },
-  { commit: '405d446', date: '2026-02-26', message: 'feat: Add AList custom server settings for admin' },
-  { commit: '54b683a', date: '2026-02-26', message: 'feat: Add single thread CF download fallback to modal' },
-  { commit: 'ce97770', date: '2026-02-26', message: 'feat: Add multithreading Web NDM downloader for Baidu Pan CF to main dashboard' },
-  { commit: '4ea312d', date: '2026-02-26', message: 'feat: implement multithreaded Web NDM downloader for Baidu Pan CF' },
-  { commit: 'bf928dd', date: '2026-02-26', message: 'fix: mobile CF download - pre-open window to avoid popup blocker' },
-  { commit: '573f68a', date: '2026-02-26', message: 'fix: Aliyun downloads use AList /p/ proxy mode, errors return text not JSON' },
-  { commit: 'd7f5968', date: '2026-02-26', message: 'fix: match /aliyun_new path for Aliyun Cloud Drive proxy downloads' },
-  { commit: '8899a17', date: '2026-02-26', message: 'fix: Aliyun Cloud Drive uses proxy download (signed URL needs server headers)' },
-  { commit: 'df597f5', date: '2026-02-26', message: 'fix: all storages use direct download, only Baidu large files show method picker' },
-  { commit: 'b022dba', date: '2026-02-26', message: 'fix: use cf.ryantan.fun instead of workers.dev for CF proxy' },
-  { commit: '68766af', date: '2026-02-26', message: 'feat: add Cloudflare Workers edge proxy download option' },
-  { commit: '54ab4ba', date: '2026-02-26', message: 'feat: add auto-UA download option for large Baidu Pan files' },
-  { commit: '1898d0a', date: '2026-02-26', message: 'feat: 32-thread parallel download engine for Baidu Pan with progress bar' },
-  { commit: '9505da3', date: '2026-02-25', message: 'feat: smart download - small files direct, large files show method picker' },
-  { commit: '0214efa', date: '2026-02-25', message: 'feat: add IP_Stats panel, Cloud_Drive checkboxes + batch download' },
-  { commit: '7c8068e', date: '2026-02-25', message: 'fix: remove stale download modal JSX, clear all TS errors' },
-  { commit: 'a3a5e98', date: '2026-02-25', message: 'feat: server-side User-Agent proxy download for Baidu Pan (no plugin needed)' },
-  { commit: 'b6cfcd1', date: '2026-02-25', message: 'feat: add download options modal for Cloud_Drive (direct link + proxy)' },
-  { commit: 'ba9c6a6', date: '2026-02-25', message: 'fix: use AList /p/ proxy mode for Baidu Pan large file downloads' },
-  { commit: '62e3f5e', date: '2026-02-25', message: 'fix: Use AList proxy /d/ URL for downloads to bypass Baidu Pan auth' },
-  { commit: '584207f', date: '2026-02-25', message: 'feat: Add AList Cloud_Drive panel to home page' },
-  { commit: '86655b8', date: '2026-02-25', message: 'fix: allow sql run in production' },
-  { commit: '9c26c0b', date: '2026-02-25', message: 'fix: allow github upload in production' },
-  { commit: '25ea2a6', date: '2026-02-25', message: 'feat: optimize github upload to support binary files' },
-  { commit: '5559d8f', date: '2026-02-25', message: 'feat: Mobile responsive adaptation' },
-  { commit: '5d69123', date: '2026-02-25', message: 'Add postcss.config.mjs and eslint.config.mjs to fix Tailwind CSS styling' },
-  { commit: '378d1be', date: '2026-02-25', message: 'Add missing files: _auth.ts, globals.css, favicon, login, sql-run, github-files, github-upload, next.config.ts' },
-  { commit: '46d1068', date: '2026-02-25', message: 'Initial commit – dashboard code' },
+const CHANGELOG_DATA: { commit: string; date: string; message: string; version: string; isMilestone?: boolean }[] = [
+  { commit: '82bbc8e', date: '2026-02-28', version: 'v1.3.0', isMilestone: true, message: '系统：更新跨项目的全栈数据大盘，完善并统合系统变更记录的时间轴组件。' },
+  { commit: '2987c0c', date: '2026-02-28', version: 'v1.2.9', message: '系统：全面集成 v1.0 到 v1.2 的各项演变记录，在面板顶层增加版本控制徽章。' },
+  { commit: 'f4af374', date: '2026-02-28', version: 'v1.2.8', message: '界面：注入系统版本号状态实时展示，并添加了全新的聚合更新日志弹出视窗交互。' },
+  { commit: 'b88cd25', date: '2026-02-28', version: 'v1.2.7', isMilestone: true, message: '修复：优化并重构跳转机制，彻底解决了移动端浏览器拦截 Cloudflare 下载页代理弹窗的问题。' },
+  { commit: '0db06b6', date: '2026-02-27', version: 'v1.2.6', isMilestone: true, message: '修复：填补高危遗漏，由于缺失 sign 参数导致部分直链下载抛出 403 阻断拒绝请求修复。' },
+  { commit: '5a9ff26', date: '2026-02-27', version: 'v1.2.5', message: '系统：战略性放弃暂不稳定的 Web-NDM 引擎试验，全面回滚至兼容性最强的经典直链代理分发模式。' },
+  { commit: 'b425416', date: '2026-02-26', version: 'v1.2.4', message: '网盘：针对小体积请求进行特判防 403 路由疏浚；在 Web NDM 中新增加速中断取消按钮。' },
+  { commit: '276f54c', date: '2026-02-26', version: 'v1.2.3', message: '修复：规避 Cloudflare 代理节点缺失 Range 头缓存响应带来的底层文件大小检测受限 Bug。' },
+  { commit: 'a161677', date: '2026-02-26', version: 'v1.2.2', message: '网络：加入突发流量重连并发策略，以强制手段打通部分地区针对多并发的分流掐断制裁。' },
+  { commit: 'd5a9091', date: '2026-02-26', version: 'v1.2.1', message: '底层：撤回 Web NDM 的 IO 到盘缓存机制，改回全速无限制内存汇流传输；修复线程配置面板传值的 Bug。' },
+  { commit: 'bbbbc7a', date: '2026-02-26', version: 'v1.2.0', message: '界面：提供高度开放配置，将底层的多线程数量参数通过滑块接口彻底放权给管理员自由调整。' },
+  { commit: '1e475b0', date: '2026-02-26', version: 'v1.1.9', message: '修复：修补部分数据块龟速拖慢全图局面的隐患，为了减缓内存压力强转回磁盘模式，精简至3线程容错。' },
+  { commit: 'ceee006', date: '2026-02-26', version: 'v1.1.8', isMilestone: true, message: '界面：进一步革新全站的多线程响应式操作视图布局，解决手机端直连状态下操作堆叠问题。' },
+  { commit: '405d446', date: '2026-02-26', version: 'v1.1.7', message: '安全：加入针对 AList 专属主机的自由环境热切换以及服务器管理权限功能。' },
+  { commit: '54b683a', date: '2026-02-26', version: 'v1.1.6', message: '网盘：加入一个备选的保守派单线程请求后备下载通道，保证环境极其恶劣下的下限。' },
+  { commit: 'ce97770', date: '2026-02-26', version: 'v1.1.5', message: '系统：在核心 Dashboard 画廊总控中嵌入百度网盘专用的强力型多线程并发控制系统部件。' },
+  { commit: '4ea312d', date: '2026-02-26', version: 'v1.1.4', message: '核心：自主研发并初现多线程 Web NDM 黑客级下载器逻辑构建框架。' },
+  { commit: 'bf928dd', date: '2026-02-26', version: 'v1.1.3', isMilestone: true, message: '修复：绕过一切系统弹窗拦截机制——在触发 Cloudflare 无头浏览前以预生成标签页占据视图制高点。' },
+  { commit: '573f68a', date: '2026-02-26', version: 'v1.1.2', message: '网盘：纠正阿里云等服务商走原载直连引发的签名劫持拦截报错，强行引流至原生独立 /p/ 代理引擎。' },
+  { commit: 'd7f5968', date: '2026-02-26', version: 'v1.1.1', message: '网盘：修补对特供版 /aliyun_new 高级代理路由的动态探测抓取识别能力。' },
+  { commit: '8899a17', date: '2026-02-26', version: 'v1.1.0', isMilestone: true, message: '核心：突围跨域死锁！成功使用经过后台鉴权签名并二次包裹头的服务端特种解析转发手段进行免限速投递。' },
+  { commit: 'df597f5', date: '2026-02-26', version: 'v1.0.9', message: '网络：重构决策分发枢纽，其他通用网格走绿通直链，唯遇到极大参数量文件时触发调度器窗口。' },
+  { commit: 'b022dba', date: '2026-02-26', version: 'v1.0.8', message: '网络：因基础 Workers.dev 域名大面积超时，全面更换主力加速通道至稳定定制域名 cf.ryantan.fun。' },
+  { commit: '68766af', date: '2026-02-26', version: 'v1.0.7', message: '网络：惊艳亮相——首度嵌入全球泛播 Cloudflare Workers 边缘计算节点，真正实现无痛代理。' },
+  { commit: '54ab4ba', date: '2026-02-26', version: 'v1.0.6', message: '核心：服务端强制染色，智能注入泛解析 pan.baidu.com 标的 User-Agent 防封锁识别机制。' },
+  { commit: '1898d0a', date: '2026-02-26', version: 'v1.0.5', isMilestone: true, message: '试验：首发基于 HTML5 引擎的极快 32 原生并发切分下载实验室特性架构测试。' },
+  { commit: '9505da3', date: '2026-02-25', version: 'v1.0.4', message: '功能：实装动态体量路由探测针，小对象一键下达直连，大质量文件呼出智能对策包窗口。' },
+  { commit: '0214efa', date: '2026-02-25', version: 'v1.0.3', isMilestone: true, message: '系统：在首页搭建可视化地域流量分析监控屏；补全批量下载与勾选全选控件全家桶。' },
+  { commit: '7c8068e', date: '2026-02-25', version: 'v1.0.2', message: '界面：精锐减负！移除历史死代码陈旧弹窗资产，并消灭所有 TypeScript 严格类型推导错误。' },
+  { commit: 'a3a5e98', date: '2026-02-25', version: 'v1.0.2', message: '网络：免浏览器附加组件——以无头后端特异形态构建原生代理响应 UA 桥接。' },
+  { commit: 'b6cfcd1', date: '2026-02-25', version: 'v1.0.1', message: '界面：扩建网盘下载面板选项体系，使直链极速通道与高隐匿代理信道并存。' },
+  { commit: 'ba9c6a6', date: '2026-02-25', version: 'v1.0.1', message: '修复：阻截官方安全拦截锁，将大流量文件强制导流至纯净安全的 /p/ AList 隐身域控代理模式。' },
+  { commit: '62e3f5e', date: '2026-02-25', version: 'v1.0.1', message: '网盘：规避严密封锁圈，灵活运用 /d/ 标准授权 URL 完成合法突破重定向桥梁架设。' },
+  { commit: '584207f', date: '2026-02-25', version: 'v1.0.1', isMilestone: true, message: '集成：从 0 到 1 飞越：正式将强大的百度网盘· AList 集成中枢深度打散并入主控制台数据大屏内置独立工作组件内。' },
+  { commit: '86655b8', date: '2026-02-25', version: 'v1.0.0', message: '修复：开放线上最高权限，允许 Vercel 生产强控环境下依然能直插终端调配后端 SQL 桥。' },
+  { commit: '9c26c0b', date: '2026-02-25', version: 'v1.0.0', message: '修复：绕过远端跨域隔离，授予核心引擎针对生产主机的强制作出代码 GitHub Commit 变动的生杀大权。' },
+  { commit: '25ea2a6', date: '2026-02-25', version: 'v1.0.0', message: '网络：极致压缩 GitHub API 底层管道交互指令，完美吞吐二进位流巨无霸大文件。' },
+  { commit: '5559d8f', date: '2026-02-25', version: 'v1.0.0', message: '界面：彻底实施多端自适应手术改造计划，完成全屏幕宽度的弹性兼容与布局翻新。' },
+  { commit: '5d69123', date: '2026-02-25', version: 'v1.0.0', message: '配置：注入 PostCSS 与 ESLint 基座守护底层框架样式生成稳定性。' },
+  { commit: '378d1be', date: '2026-02-25', version: 'v1.0.0', message: '系统：基石竣工，包含样式库、安全鉴权密钥库、图标与部署映射图正式拼装入网。' },
+  { commit: '46d1068', date: '2026-02-25', version: 'v1.0.0', isMilestone: true, message: '肇始：向浩瀚开源世界刻下包含 Vercel 域名解析、GitHub 代码推送及 Supabase SQL 阵列大盘的初代原型控制枢纽。' },
 ];
 
 export default function Home() {
@@ -598,9 +599,9 @@ export default function Home() {
                 <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar pb-6">
                   <div className="space-y-3">
                     {CHANGELOG_DATA.map((log, index) => {
-                      if (log.version) {
+                      if (log.isMilestone) {
                         return (
-                          <div key={log.commit} className="relative pl-5 border-l-2 border-pink-500/40 py-2 mt-4 first:mt-0">
+                          <div key={log.commit + index} className="relative pl-5 border-l-2 border-pink-500/40 py-2 mt-4 first:mt-0">
                             <div className="absolute w-2.5 h-2.5 bg-pink-500 rounded-full left-[calc(-0.4rem)] top-3 ring-4 ring-zinc-950 shadow-[0_0_8px_rgba(236,72,153,0.8)]"></div>
                             <div className="flex items-end gap-2 mb-1.5 pt-0.5">
                               <span className="text-sm font-black text-pink-400 tracking-wide">{log.version}</span>
@@ -608,22 +609,20 @@ export default function Home() {
                               <span className="text-[10px] text-zinc-600 font-mono mb-[1px]">{log.date}</span>
                             </div>
                             <div className="text-[12px] text-zinc-300 font-medium mb-1 line-clamp-2 pr-2 leading-relaxed">
-                              {log.milestoneDesc}
-                            </div>
-                            <div className="text-[11px] text-zinc-500 leading-tight">
-                              &gt; {log.message}
+                              {log.message}
                             </div>
                           </div>
                         );
                       }
                       return (
-                        <div key={log.commit} className="relative pl-5 border-l-2 border-zinc-800/80 py-0.5">
-                          <div className="absolute w-1.5 h-1.5 bg-zinc-700 rounded-full left-[calc(-0.25rem)] top-2 ring-2 ring-zinc-950"></div>
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-[10px] text-zinc-500 font-mono">{log.commit}</span>
+                        <div key={log.commit + index} className="relative pl-5 border-l-2 border-zinc-800/80 py-1.5">
+                          <div className="absolute w-1.5 h-1.5 bg-zinc-700 rounded-full left-[calc(-0.25rem)] top-2.5 ring-2 ring-zinc-950"></div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[11px] font-bold text-zinc-400">{log.version}</span>
+                            <span className="text-[9px] text-zinc-500 font-mono">{log.commit}</span>
                             <span className="text-[9px] text-zinc-600 font-mono">{log.date}</span>
                           </div>
-                          <div className="text-[10px] text-zinc-400 leading-tight">
+                          <div className="text-[11px] text-zinc-400 leading-tight pr-2">
                             {log.message}
                           </div>
                         </div>
