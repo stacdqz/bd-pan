@@ -505,7 +505,7 @@ export default function Home() {
                     .then(data => {
                       if (data.code === 200 && data.data?.raw_url) {
                         const cfUrl = `https://cf.ryantan.fun/?url=${encodeURIComponent(data.data.raw_url)}`;
-                        window.open(cfUrl, '_blank');
+                        window.location.href = cfUrl;
                       } else {
                         setAlistMsg('❌ 获取直链失败，无法走 CF 代理');
                       }
