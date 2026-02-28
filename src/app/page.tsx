@@ -596,73 +596,39 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar pb-6">
-
-                  <div className="text-[12px] font-bold text-zinc-400 mb-2 border-b border-zinc-800 pb-2">🎉 主要版本里程碑</div>
-                  <div className="relative pl-4 border-l-2 border-pink-500/30">
-                    <div className="absolute w-2 h-2 bg-pink-500 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-xs font-bold text-pink-400">v1.2.1</span>
-                      <span className="text-[10px] text-zinc-500 font-mono">2026-02-28</span>
-                    </div>
-                    <ul className="text-[11px] text-zinc-400 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-700">
-                      <li>修复移动端浏览器拦截 CF 代理加速新窗口弹窗的问题，改为直接跳转下载。</li>
-                      <li>添加了各端同步的版本号标识和详细的更新日志展示面板（追溯了第一行代码起的所有 Commit）。</li>
-                    </ul>
-                  </div>
-
-                  <div className="relative pl-4 border-l-2 border-zinc-800">
-                    <div className="absolute w-2 h-2 bg-zinc-700 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-xs font-bold text-zinc-300">v1.2.0</span>
-                      <span className="text-[10px] text-zinc-600 font-mono">2026-02-27</span>
-                    </div>
-                    <ul className="text-[11px] text-zinc-500 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-800">
-                      <li>移除之前不稳定的多线程方案，整体逻辑退回至更快速稳定的经典直链防封代理模式。</li>
-                      <li>恢复 4 个默认经典的下载触发模式挑选界面。</li>
-                      <li>修复了大文件 302 直链下载以及批量下载时丢失 sign 参数导致 403 的阻断报错问题。</li>
-                      <li>完成了纯享版本 baidu-pan-alist 到单独 Github 全栈库的抽离和同步独立部署。</li>
-                      <li>增加部署了基于 Supabase 的全站流量与精准地域维度分发的后端统计与 API 埋点。</li>
-                    </ul>
-                  </div>
-
-                  <div className="relative pl-4 border-l-2 border-zinc-800">
-                    <div className="absolute w-2 h-2 bg-zinc-700 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-xs font-bold text-zinc-300">v1.1.0</span>
-                      <span className="text-[10px] text-zinc-600 font-mono">2026-02-26</span>
-                    </div>
-                    <ul className="text-[11px] text-zinc-500 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-800">
-                      <li>新增 Cloudflare Workers 边缘代理加速下载选项，拯救本地屏蔽的大容量压缩包等文件。</li>
-                      <li>针对移动端的各种极端误触与样式自适应问题做了专门优化与适配。</li>
-                      <li>针对跨网盘（阿里云盘等）增加了原生 AList /p/ 智能服务端代理下载，彻底修复签名缺失报错。</li>
-                    </ul>
-                  </div>
-
-                  <div className="relative pl-4 border-l-2 border-zinc-800 pb-4">
-                    <div className="absolute w-2 h-2 bg-zinc-700 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <span className="text-xs font-bold text-zinc-300">v1.0.0</span>
-                      <span className="text-[10px] text-zinc-600 font-mono">2026-02-25</span>
-                    </div>
-                    <ul className="text-[11px] text-zinc-500 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-800">
-                      <li>初始提交开源项目主线框架：在 Dashboard 控制台核心区域嵌入百度网盘· AList 的深度集成文件流体系。</li>
-                      <li>原生拥有一站式的系统资源独立文件分类视图、新建、极速重命名、实时全选与批处理下载机制。</li>
-                    </ul>
-                  </div>
-
-                  <div className="text-[12px] font-bold text-zinc-500 mt-6 mb-2 border-b border-zinc-800 pb-2">🗃️ 完整 Git Commit 记录 (共 {CHANGELOG_DATA.length} 条)</div>
                   <div className="space-y-3">
-                    {CHANGELOG_DATA.map((log, index) => (
-                      <div key={log.commit} className="relative pl-3 border-l-2 border-zinc-800/60">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          <span className="text-[10px] bg-zinc-800/80 px-1 py-0.5 rounded font-mono text-zinc-400">{log.commit}</span>
-                          <span className="text-[9px] text-zinc-600 font-mono">{log.date}</span>
+                    {CHANGELOG_DATA.map((log, index) => {
+                      if (log.version) {
+                        return (
+                          <div key={log.commit} className="relative pl-5 border-l-2 border-pink-500/40 py-2 mt-4 first:mt-0">
+                            <div className="absolute w-2.5 h-2.5 bg-pink-500 rounded-full left-[calc(-0.4rem)] top-3 ring-4 ring-zinc-950 shadow-[0_0_8px_rgba(236,72,153,0.8)]"></div>
+                            <div className="flex items-end gap-2 mb-1.5 pt-0.5">
+                              <span className="text-sm font-black text-pink-400 tracking-wide">{log.version}</span>
+                              <span className="text-[10px] bg-zinc-800/80 px-1 py-0.5 rounded font-mono text-zinc-500">{log.commit}</span>
+                              <span className="text-[10px] text-zinc-600 font-mono mb-[1px]">{log.date}</span>
+                            </div>
+                            <div className="text-[12px] text-zinc-300 font-medium mb-1 line-clamp-2 pr-2 leading-relaxed">
+                              {log.milestoneDesc}
+                            </div>
+                            <div className="text-[11px] text-zinc-500 leading-tight">
+                              &gt; {log.message}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={log.commit} className="relative pl-5 border-l-2 border-zinc-800/80 py-0.5">
+                          <div className="absolute w-1.5 h-1.5 bg-zinc-700 rounded-full left-[calc(-0.25rem)] top-2 ring-2 ring-zinc-950"></div>
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-[10px] text-zinc-500 font-mono">{log.commit}</span>
+                            <span className="text-[9px] text-zinc-600 font-mono">{log.date}</span>
+                          </div>
+                          <div className="text-[10px] text-zinc-400 leading-tight">
+                            {log.message}
+                          </div>
                         </div>
-                        <div className="text-[10px] text-zinc-500 leading-tight">
-                          {log.message}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -679,10 +645,10 @@ export default function Home() {
                 <span className="text-[10px] text-zinc-600">· AList</span>
                 <button
                   onClick={() => setShowChangelog(true)}
-                  className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-pink-400 hover:bg-zinc-700 transition-colors cursor-pointer border border-pink-500/20"
+                  className="ml-2 text-[10px] px-2 py-0.5 rounded-full bg-zinc-900 border border-pink-500/40 text-pink-400 hover:bg-zinc-800 hover:border-pink-300 transition-colors shadow-lg cursor-pointer"
                   title="查看更新日志"
                 >
-                  v1.2.1
+                  v1.3.0 ✨
                 </button>
               </div>
               <div className="flex items-center gap-2">
