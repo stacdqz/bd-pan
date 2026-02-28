@@ -28,6 +28,7 @@ export default function Home() {
   const [alistRenaming, setAlistRenaming] = useState<string | null>(null);
   const [alistNewName, setAlistNewName] = useState('');
   const [alistDownloadModal, setAlistDownloadModal] = useState<{ name: string; filePath: string; sign?: string } | null>(null);
+  const [showChangelog, setShowChangelog] = useState(false);
 
   // === 远端 AList 设置（仅本地生效） ===
   const [showSettings, setShowSettings] = useState(false);
@@ -539,6 +540,59 @@ export default function Home() {
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         <div className="max-w-4xl mx-auto animate-in">
 
+          {/* 更新日志弹窗 */}
+          {showChangelog && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setShowChangelog(false)}>
+              <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-xl p-5 shadow-2xl mx-4 animate-in fade-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+                <div className="flex items-center justify-between mb-4 pb-2 border-b border-zinc-800/50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-pink-500">📝</span>
+                    <h3 className="text-sm font-bold text-zinc-200">更新日志 <span className="text-zinc-500 font-normal text-xs ml-1">Changelog</span></h3>
+                  </div>
+                  <button onClick={() => setShowChangelog(false)} className="text-zinc-500 hover:text-zinc-300">✕</button>
+                </div>
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="relative pl-4 border-l-2 border-pink-500/30">
+                    <div className="absolute w-2 h-2 bg-pink-500 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-xs font-bold text-pink-400">v1.0.3</span>
+                      <span className="text-[10px] text-zinc-500 font-mono">2026-02-28</span>
+                    </div>
+                    <ul className="text-[11px] text-zinc-400 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-700">
+                      <li>修复移动端浏览器拦截 CF 代理加速新窗口弹窗的问题，改为直接跳转下载。</li>
+                      <li>添加了各端同步的版本号标识和更新日志浏览面板。</li>
+                    </ul>
+                  </div>
+
+                  <div className="relative pl-4 border-l-2 border-zinc-800">
+                    <div className="absolute w-2 h-2 bg-zinc-700 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-xs font-bold text-zinc-300">v1.0.2</span>
+                      <span className="text-[10px] text-zinc-600 font-mono">2026-02-27</span>
+                    </div>
+                    <ul className="text-[11px] text-zinc-500 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-800">
+                      <li>修复了大文件 302 直链下载以及批量下载时丢失 sign 参数导致报错的问题。</li>
+                      <li>同步独立了 baidu-pan-alist 纯享版到单独全栈库，并附加 Supabase 流量统计埋点。</li>
+                    </ul>
+                  </div>
+
+                  <div className="relative pl-4 border-l-2 border-zinc-800">
+                    <div className="absolute w-2 h-2 bg-zinc-700 rounded-full left-[-5px] top-1.5 ring-4 ring-zinc-950"></div>
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <span className="text-xs font-bold text-zinc-300">v1.0.1</span>
+                      <span className="text-[10px] text-zinc-600 font-mono">2026-02-27</span>
+                    </div>
+                    <ul className="text-[11px] text-zinc-500 space-y-1 list-disc pl-3 mt-1 marker:text-zinc-800">
+                      <li>移除之前不稳定的 Web-NDM 多线程重构方案，整体下载退回更稳定的经典代理模式。</li>
+                      <li>恢复 4 个默认下载按键界面，化繁为简。</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* 文件浏览器卡片 */}
           <div className="bg-zinc-900/40 border border-zinc-800 rounded-2xl overflow-hidden">
 
@@ -547,6 +601,13 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-black tracking-widest uppercase italic text-zinc-500">Cloud_Drive</span>
                 <span className="text-[10px] text-zinc-600">· AList</span>
+                <button
+                  onClick={() => setShowChangelog(true)}
+                  className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-pink-400 hover:bg-zinc-700 transition-colors cursor-pointer border border-pink-500/20"
+                  title="查看更新日志"
+                >
+                  v1.0.3
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 {adminToken && (
