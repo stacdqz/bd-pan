@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 const ALIST_BASE_DEFAULT = (process.env.NEXT_PUBLIC_ALIST_URL || 'http://47.108.222.119:5244').replace(/\/+$/, '');
 const SIZE_THRESHOLD = 20 * 1024 * 1024; // 20MB
 
-const CHANGELOG_DATA = [
+const CHANGELOG_DATA: { commit: string; date: string; message: string; version?: string; milestoneDesc?: string }[] = [
   { commit: '2987c0c', date: '2026-02-28', message: 'feat: complete v1.0 to v1.2 changelog history and badge' },
   { commit: 'f4af374', date: '2026-02-28', message: 'feat: add version badge and changelog popup' },
   { commit: 'b88cd25', date: '2026-02-28', message: 'Fix CF download popup block on mobile' },
