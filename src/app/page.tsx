@@ -311,23 +311,30 @@ export default function Home() {
     setAlistUploading(true);
     setAlistMsg(null);
     try {
-      const tokenRes = await fetch('/api/alist-token', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${adminToken}` },
-      });
-      if (!tokenRes.ok) throw new Error('Cannot get AList token');
-      const { token: alistToken } = await tokenRes.json();
       const uploadPath = alistPath.replace(/\/+$/, '') + '/' + alistUploadFile.name;
-      const uploadRes = await fetch(`${getAlistBase()}/api/fs/put`, {
+      // 需要对每一段路径进行独立 URI 编码，避免 / 也被转义导致找不到目录
+      const encodedFilePath = uploadPath.split('/').map(encodeURIComponent).join('/');
+
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${adminToken}`,
+        'File-Path': encodedFilePath,
+        'Content-Type': alistUploadFile.type || 'application/octet-stream',
+        'Content-Length': String(alistUploadFile.size),
+      };
+
+      const cc = getCustomConfig();
+      if (cc) {
+        if (cc.url) headers['x-alist-url'] = cc.url;
+        if (cc.user) headers['x-alist-username'] = cc.user;
+        if (cc.pass) headers['x-alist-password'] = cc.pass;
+      }
+
+      const uploadRes = await fetch('/api/alist-upload', {
         method: 'PUT',
-        headers: {
-          'Authorization': alistToken,
-          'File-Path': encodeURIComponent(uploadPath),
-          'Content-Type': alistUploadFile.type || 'application/octet-stream',
-          'Content-Length': String(alistUploadFile.size),
-        },
+        headers,
         body: alistUploadFile,
       });
+
       const uploadData = await uploadRes.json();
       if (uploadData.code === 200) { setAlistMsg('✅ 上传成功'); setAlistUploadFile(null); alistListDir(alistPath); }
       else setAlistMsg(`❌ ${uploadData.message}`);
