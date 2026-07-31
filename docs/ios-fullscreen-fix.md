@@ -56,7 +56,7 @@ F 键同理。
 ```
 改为相对路径后，iframe 从**当前页面同源**加载 viewer.html：
 - 本地开发：`http://192.168.1.43:3000/pdfjs/viewer.html` ✅ 加载本地修改版
-- 生产 Vercel：`https://wlm.cdqzsta.tech/pdfjs/viewer.html` ✅ 加载部署版
+- 生产 Vercel：`https://wlm.stacdqz.tech/pdfjs/viewer.html` ✅ 加载部署版
 
 ---
 
